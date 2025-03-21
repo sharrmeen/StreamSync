@@ -19,7 +19,7 @@ StreamSync is a scalable and cost-efficient streaming system designed to ensure 
 ## Installation
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/StreamSync.git
+git clone https://github.com/sharrmeen/StreamSync.git
 cd StreamSync
 
 # Install dependencies
