@@ -92,14 +92,14 @@
 
 
 // Fetches the live stream URL for a given userId and time
-export const getLiveStream = async (userId: string, time: number): Promise<{ id: string; url: string }> => {
+export const getLiveStream = async (userId: string): Promise<{ id: string; url: string }> => {
   try {
-    const response = await fetch(`http://localhost:5001/playlist?user_id=${userId}&time=${time}`);
+    const response = await fetch(`http://localhost:5001/playlist?user_id=${userId}`);
     if (!response.ok) {
       throw new Error(`Failed to fetch playlist: ${response.statusText}`);
     }
     // The backend returns the HLS playlist as text, so we need to construct the URL
-    const playlistUrl = `http://localhost:5001/playlist?user_id=${userId}&time=${time}`;
+    const playlistUrl = `http://localhost:5001/playlist?user_id=${userId}`;
     return {
       id: `${userId}-stream`, // A unique ID for the stream
       url: playlistUrl, // The URL to the HLS playlist

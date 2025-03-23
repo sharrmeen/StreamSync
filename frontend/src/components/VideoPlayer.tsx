@@ -700,14 +700,17 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
       }
 
       const hls = new Hls({
-        startLevel: 2,
+        // startLevel: 2,
+        startLevel : 0,
         autoStartLoad: true,
         debug: true,
         maxBufferLength: 60,
         maxMaxBufferLength: 120,
         maxBufferSize: 60 * 1000 * 1000,
-        liveSyncDurationCount: 3,
+        // liveSyncDurationCount: 3,
+        liveSyncDurationCount: 5,
         liveMaxLatencyDurationCount: 10,
+        lowLatencyMode: false,
       });
 
       hlsRef.current = hls;
