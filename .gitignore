@@ -10,6 +10,9 @@ yarn-error.log*
 
 # Environment variables
 .env
+venv/
+__pycache__/
+*.pyc
 
 # Build output
 dist/
