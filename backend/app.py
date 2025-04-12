@@ -12,7 +12,8 @@ import time
 import json
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "http://localhost:8080"}})
+CORS(app)
+# CORS(app, resources={r"/*": {"origins": "http://localhost:8080"}})
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')

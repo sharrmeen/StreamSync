@@ -90,24 +90,30 @@
 // };
 
 
-
-// Fetches the live stream URL for a given userId and time
+// @/services/videoService.ts
 export const getLiveStream = async (userId: string): Promise<{ id: string; url: string }> => {
   try {
-    const response = await fetch(`http://localhost:5001/playlist?user_id=${userId}`);
+    const encodedUserId = encodeURIComponent(userId); // Ensure special characters are handled
+    const playlistUrl = `http://localhost:5001/playlist?user_id=${encodedUserId}`;
+    const response = await fetch(playlistUrl, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/vnd.apple.mpegurl', // Match Flask’s mimetype
+      },
+    });
+
     if (!response.ok) {
-      throw new Error(`Failed to fetch playlist: ${response.statusText}`);
+      throw new Error(`Failed to fetch playlist: ${response.status} - ${response.statusText}`);
     }
-    // The backend returns the HLS playlist as text, so we need to construct the URL
-    const playlistUrl = `http://localhost:5001/playlist?user_id=${userId}`;
+
+    // Since Flask returns a raw .m3u8 playlist, we return the URL for the player to fetch
     return {
-      id: `${userId}-stream`, // A unique ID for the stream
-      url: playlistUrl, // The URL to the HLS playlist
+      id: `${userId}-stream`, // Consistent unique ID
+      url: playlistUrl, // HLS player will fetch this URL directly
     };
   } catch (error) {
     console.error("Error fetching live stream:", error);
-    throw error;
+    throw error; // Re-throw to let Dashboard handle it
   }
 };
 
-// Removed trackVideoProgress since it's not needed for live streams
