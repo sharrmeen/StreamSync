@@ -1,5 +1,4 @@
 
-// // This is a mock implementation. In a real app, you would integrate with AWS MediaConvert, S3, CloudFront and AWS MediaLive.
 
 // export interface Video {
 //   id: string;
