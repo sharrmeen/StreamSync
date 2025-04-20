@@ -10,9 +10,73 @@ from datetime import datetime, timezone
 import math
 import time
 import json
+import os
+from werkzeug.utils import secure_filename
+# from resegment_video import resegment_video, upload_to_minio, update_redis  
 
 app = Flask(__name__)
 CORS(app)
+
+
+# # Directory for temporary video storage
+# UPLOAD_DIR = "./uploads"
+# os.makedirs(UPLOAD_DIR, exist_ok=True)
+
+# @app.route('/upload', methods=['POST'])
+# @limiter.limit("5 per minute")
+# def upload_video():
+#     request_counter['upload_requests'] = request_counter.get('upload_requests', 0) + 1
+    
+#     # Check form data
+#     if 'video' not in request.files or 'video_id' not in request.form:
+#         logging.error("Missing video file or video_id")
+#         return jsonify({"error": "Bad Request", "message": "Video file and video_id required"}), 400
+    
+#     video_file = request.files['video']
+#     video_id = request.form['video_id']
+    
+#     # Validate video_id
+#     if not video_id or not video_id.isalnum():
+#         logging.error(f"Invalid video_id: {video_id}")
+#         return jsonify({"error": "Bad Request", "message": "Video ID must be alphanumeric"}), 400
+    
+#     # Validate file
+#     if video_file.filename == '' or not video_file.filename.lower().endswith('.mp4'):
+#         logging.error("Invalid file type or no file selected")
+#         return jsonify({"error": "Bad Request", "message": "Only MP4 files are allowed"}), 400
+    
+#     # Save temporarily
+#     filename = secure_filename(video_file.filename)
+#     temp_path = os.path.join(UPLOAD_DIR, f"{video_id}.mp4")
+#     try:
+#         video_file.save(temp_path)
+#         logging.info(f"Saved video {video_id} to {temp_path}")
+#     except Exception as e:
+#         logging.error(f"Failed to save video {video_id}: {e}")
+#         return jsonify({"error": "Server Error", "message": "Failed to save video"}), 500
+    
+#     # Process video (preprocess, segment, upload to MinIO, update Redis)
+#     try:
+#         segment_count, last_duration = resegment_video(video_id, temp_path, OUTPUT_BASE_DIR)
+#         upload_to_minio(video_id, OUTPUT_BASE_DIR)
+#         update_redis(video_id, segment_count, last_duration)
+#         logging.info(f"Processed and uploaded video {video_id}")
+        
+#         # Clean up temporary file
+#         os.remove(temp_path)
+#         logging.info(f"Removed temporary file {temp_path}")
+        
+#         return jsonify({
+#             "message": f"Video {video_id} uploaded and processed successfully",
+#             "video_id": video_id,
+#             "segment_count": segment_count,
+#             "last_duration": last_duration
+#         }), 200
+#     except Exception as e:
+#         logging.error(f"Failed to process video {video_id}: {e}")
+#         return jsonify({"error": "Server Error", "message": f"Processing failed: {str(e)}"}), 500
+
+# # ... (rest of app.py remains unchanged)
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -236,6 +300,13 @@ def log_request_info():
 def handle_exception(e):
     print(f"Unexpected error: {e}")
     return jsonify({"error": "An unexpected error occurred", "message": str(e)}), 500
+
+# ###########################
+@app.route('/users', methods=['GET'])
+def get_users():
+    keys = redis_client.keys("user_sequence:*")
+    user_ids = [key.split(":")[1] for key in keys]
+    return jsonify(user_ids)
 
 @app.route('/health', methods=['GET'])
 def health_check():
