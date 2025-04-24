@@ -104,7 +104,7 @@ const Navbar: React.FC = () => {
         {!isMobile && !isAuthenticated && (
           <div className="hidden md:flex items-center space-x-4">
             <Button asChild variant="ghost">
-              <Link to="/login">Log in</Link>
+              <Link to="/login">Start Streaming</Link>
             </Button>
             <Button asChild>
               <Link to="/register">Sign up</Link>
